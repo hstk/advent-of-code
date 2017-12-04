@@ -1,3 +1,7 @@
+-- https://adventofcode.com/2017/day/2
+import Data.Maybe(isJust, fromJust)
+import Data.List(find)
+
 input = "104 240 147 246 123 175 372 71 116 230 260 118 202 270 277 292\n\
 \740 755 135 205 429 822 844 90 828 115 440 805 526 91 519 373\n\
 \1630 991 1471 1294 52 1566 50 1508 1367 1489 55 547 342 512 323 51\n\
@@ -19,10 +23,18 @@ input = "104 240 147 246 123 175 372 71 116 230 260 118 202 270 277 292\n\
 -- then splitOn " " input . read
 
 diceData :: String -> [[Int]]
-diceData list = map (map read) . map words . lines $ list
+diceData xs = map (map read) . map words . lines $ xs
 
 distanceBetweenMinMax :: [Int] -> Int
 distanceBetweenMinMax xs = (maximum xs) - (minimum xs)
 
 corruptionChecksum :: String -> Int
 corruptionChecksum x = sum $ map distanceBetweenMinMax $ diceData x
+
+--nothing would be swell here
+findDivisors :: [Int] -> (Int, Int)
+findDivisors (x : xs) = if isJust search
+                        then (x, fromJust search)
+                        else findDivisors xs
+         where search = find (\y -> x `rem` y == 0) xs
+findDivisors [] = (0, 0)
