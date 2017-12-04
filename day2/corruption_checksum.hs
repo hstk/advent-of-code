@@ -1,6 +1,6 @@
 -- https://adventofcode.com/2017/day/2
 import Data.Maybe(isJust, fromJust)
-import Data.List(find)
+import Data.List(find, sort)
 
 input = "104 240 147 246 123 175 372 71 116 230 260 118 202 270 277 292\n\
 \740 755 135 205 429 822 844 90 828 115 440 805 526 91 519 373\n\
@@ -28,13 +28,19 @@ diceData xs = map (map read) . map words . lines $ xs
 distanceBetweenMinMax :: [Int] -> Int
 distanceBetweenMinMax xs = (maximum xs) - (minimum xs)
 
-corruptionChecksum :: String -> Int
-corruptionChecksum x = sum $ map distanceBetweenMinMax $ diceData x
-
---nothing would be swell here
 findDivisors :: [Int] -> (Int, Int)
 findDivisors (x : xs) = if isJust search
                         then (x, fromJust search)
                         else findDivisors xs
          where search = find (\y -> x `rem` y == 0) xs
 findDivisors [] = (0, 0)
+
+divideElements :: (Int, Int) -> Int
+divideElements (0, 0) = 0
+divideElements x = div (fst x) (snd x) 
+
+corruptionChecksum :: String -> Int
+corruptionChecksum x = sum $ map distanceBetweenMinMax $ diceData x
+
+corruptionChecksum' :: String -> Int
+corruptionChecksum' x = sum . map divideElements . map findDivisors . map (reverse . sort) . diceData $ x
