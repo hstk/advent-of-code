@@ -5,8 +5,6 @@ import Text.Trifecta
 import Data.Function
 import Data.List
 import Data.Maybe
-import qualified Data.Map.Strict as M
-import Data.Map.Strict (Map(..))
 
 type Inventory = String
 

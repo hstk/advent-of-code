@@ -13,20 +13,9 @@ import           Data.IntSet (IntSet(..))
 import           Data.Monoid
 import           Text.Trifecta
 
-main :: IO ()
-main = do
-  claims <- parseInput (many (parseClaim <* whiteSpace)) [] inputPath
-  let asMap = claims >>= toEntries & createMap
-
-  let overlap = M.filter (\x -> fst x > 1) asMap
-  putStrLn $ "Overlapping cells: " <> show (length overlap)
-
-  let numbersWithOverlap = M.elems overlap >>= snd
-  let allClaimsSet = IS.fromList $ claimNumber <$> claims
-  let overlappingClaimsSet = IS.fromList numbersWithOverlap
-  let noOverlap = IS.difference allClaimsSet overlappingClaimsSet
-
-  putStrLn $ "Non-overlapping claim: #" <> show noOverlap
+-- from proj root: 
+-- stack ghc -- .\2018\day3\Overlap.hs -O2 -prof -fprof-auto -rtsopts --make -main-is Overlap
+-- .\2018\day3\Overlap.exe +RTS -p
 
 data Claim = Claim
   { claimNumber :: Int
@@ -39,6 +28,20 @@ type Area        = (Int, Int)
 type ClaimNumber = Int
 type Val         = (Sum Int, [ClaimNumber])
 type ClaimMap    = Map Coord Val
+
+main :: IO ()
+main = do
+  claims <- parseInput (many (parseClaim <* whiteSpace)) [] inputPath
+  let asMap = claims >>= toEntries & createMap
+  let overlap = M.filter (\x -> fst x > 1) asMap
+  putStrLn $ "Overlapping cells: " <> show (length overlap)
+
+  let claimNosWithOverlap = M.elems overlap >>= snd
+  let allClaimsSet = IS.fromList $ claimNumber <$> claims
+  let overlappingClaimsSet = IS.fromList claimNosWithOverlap
+  let noOverlap = IS.difference allClaimsSet overlappingClaimsSet
+
+  putStrLn $ "Non-overlapping claim: #" <> show noOverlap
 
 toEntries :: Claim -> [(Coord, Val)]
 toEntries c = c
