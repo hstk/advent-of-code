@@ -19,7 +19,10 @@ main = do
   putStrLn $ "Stage 1 checksum: " <> show checksum1
 
   let stage2 = case setCompare inv of
-                Just (a, b) -> zip a b & filter (\x -> fst x == snd x) & unzip & fst
+                Just (a, b) -> zip a b 
+                             & filter (\x -> fst x == snd x) 
+                             & unzip 
+                             & fst
                 Nothing -> "no dice"
 
   putStrLn $ "Stage 2 intersection: " <> show stage2

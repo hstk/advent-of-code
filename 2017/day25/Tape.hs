@@ -68,13 +68,12 @@ act (Turing tape tState acc sum) = do
   let newSum = getSumChange symbol tState
   Turing (rule tape) (newState) (acc + 1) (newSum sum)
 
+-- try inlining this
 runTuring :: Int -> Turing -> Turing
 runTuring times =
   execState $ replicateM times $ state $ \x -> ((), act x)
 
-runTuring' times = do
-  put initialState
-
+main :: IO ()
 main = print $ countOnes $ runTuring 12134527 initialState
 
 getRule :: Symbol -> TState -> (Tape -> Tape)
