@@ -24,6 +24,7 @@ dependencies:
 - raw-strings-qq
 - trifecta
 - containers
+- time
 
 library:
   source-dirs: 
