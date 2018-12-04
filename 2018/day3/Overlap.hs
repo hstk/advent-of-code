@@ -34,6 +34,7 @@ main = do
   claims <- parseInput (many (parseClaim <* whiteSpace)) [] inputPath
   let asMap = claims >>= toEntries & createMap
   let overlap = M.filter (\x -> fst x > 1) asMap
+
   putStrLn $ "Overlapping cells: " <> show (length overlap)
 
   let claimNosWithOverlap = M.elems overlap >>= snd
@@ -79,3 +80,4 @@ parseClaim = do
 
 inputPath :: FilePath
 inputPath = "2018\\day3\\input.txt"
+
