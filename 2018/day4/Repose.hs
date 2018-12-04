@@ -4,23 +4,19 @@ import           Common
 import           Control.Applicative
 import           Data.Function ((&))
 import           Data.Functor ((<&>))
-import qualified Data.IntMap as IM
-import           Data.IntMap (IntMap(..))
-import           Data.Monoid
+-- import qualified Data.IntMap as IM
+-- import           Data.IntMap (IntMap(..))
+import           Data.List (sort)
 import           Data.Time
 import           Text.Trifecta
-
--- parse log
--- sort into events
--- stuff everything into intmap
 
 main :: IO ()
 main = do
   logs <- parseInput (many (parseLog <* whiteSpace)) [] inputPath
   print $ take 10 logs
-  
-  undefined
+  print $ sort $ take 10 logs
 
+  undefined
 
 type Guard = Int
 -- type Time = Int --00:00 -> 0, 23:59 -> 1439
@@ -29,6 +25,9 @@ data Event = Sleep | Awake | Begin Guard | End Guard
   deriving (Eq, Show)
 data LogEntry = LogEntry Event LocalTime
   deriving (Eq, Show)
+
+instance Ord LogEntry where
+  compare (LogEntry _ a) (LogEntry _ b) = compare a b 
 
 data Shift = Shift
   { guardId :: Guard
