@@ -25,6 +25,7 @@ dependencies:
 - trifecta
 - containers
 - time
+- recursion-schemes
 
 library:
   source-dirs: 

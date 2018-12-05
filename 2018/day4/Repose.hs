@@ -1,4 +1,4 @@
-module Challenge where
+module Repose where
 
 import           Common
 import           Control.Applicative
@@ -9,10 +9,23 @@ import qualified Data.Map.Strict as M
 import           Data.Map.Strict (Map(..))
 import qualified Data.IntMap as IM
 import           Data.IntMap (IntMap(..))
+import           Data.Maybe
 import           Data.Time
 import           Data.Time.LocalTime
 import           Data.Time.Calendar
 import           Text.Trifecta
+
+main :: IO ()
+main = do
+  logs <- sort <$> parseInput (many (parseLog <* whiteSpace)) [] inputPath
+  let logsByShift = groupByShift logs
+  let shifts = processShift <$> logsByShift
+  let sleepiestGuard = head $ reverse $ sortBy (compare `on` snd) $ M.toList $ sumSleepByGuard shifts
+  putStrLn $ "Sleepiest guard: " <> (show sleepiestGuard)
+  let minuteMap = shiftsToMinuteMap shifts
+  let minutes = IM.lookup (fst sleepiestGuard) minuteMap
+  putStrLn $ "Minutes: " <> (show $ fromJust minutes) -- I know, I know
+  -- sort . fmap (\x -> (length x, x)) . group . sort
 
 data LogEntry = LogEntry Event LocalTime
   deriving (Eq)
@@ -36,19 +49,6 @@ type Guard = Int
 type Minute = Int
 data Event = FallAsleep | WakeUp | Begin Guard
   deriving (Eq, Show)
-
-
-main :: IO ()
-main = do
-  logs <- sort <$> parseInput (many (parseLog <* whiteSpace)) [] inputPath
-  let logsByShift = groupByShift logs
-  let shifts = processShift <$> logsByShift
-  let sleepiestGuard = head $ reverse $ sortBy (compare `on` snd) $ M.toList $ sumSleepByGuard shifts
-  putStrLn $ "Sleepiest guard: " <> (show sleepiestGuard)
-  let mappo = shiftsToMinuteMap shifts
-  let minutes = IM.lookup (fst sleepiestGuard) mappo
-  putStrLn $ "Minutes: " <> (show $ IM.toList minutes)
-  -- sort . fmap (\x -> (length x, x)) . group . sort
 
   -- [
   -- Shift {guardId = 1499, 
