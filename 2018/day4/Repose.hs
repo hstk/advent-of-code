@@ -4,7 +4,7 @@ import           Common
 import           Control.Applicative
 import           Data.Function
 import           Data.Functor ((<&>))
-import           Data.List (sort,sortBy, groupBy)
+import           Data.List (sort,sortBy, group, groupBy)
 import qualified Data.Map.Strict as M
 import           Data.Map.Strict (Map(..))
 import qualified Data.IntMap as IM
@@ -24,8 +24,14 @@ main = do
   putStrLn $ "Sleepiest guard: " <> (show sleepiestGuard)
   let minuteMap = shiftsToMinuteMap shifts
   let minutes = IM.lookup (fst sleepiestGuard) minuteMap
-  putStrLn $ "Minutes: " <> (show $ fromJust minutes) -- I know, I know
-  -- sort . fmap (\x -> (length x, x)) . group . sort
+  putStrLn $ "Minute most likely to be sleeping by sleepiest: " <>
+    (show . findMostFrequentMinute $ fromJust minutes) -- I know, I know
+  let summarizedMap = fmap findMostFrequentMinute minuteMap
+  let predictableGuard = head $ reverse $ sortBy (compare `on` snd) $ IM.toList $ summarizedMap
+  putStrLn $ "Most common minute slept: " <> (show predictableGuard)
+
+findMostFrequentMinute :: [Minute] -> (Int, Minute)
+findMostFrequentMinute = head . reverse . sort . fmap (\x -> (length x, head x)) . group . sort
 
 data LogEntry = LogEntry Event LocalTime
   deriving (Eq)
@@ -49,19 +55,6 @@ type Guard = Int
 type Minute = Int
 data Event = FallAsleep | WakeUp | Begin Guard
   deriving (Eq, Show)
-
-  -- [
-  -- Shift {guardId = 1499, 
-  --       start = 1518-03-11 00:04:00, 
-  --       events = [[1518-03-11 00:33:00] FallAsleep,[1518-03-11 00:54:00] WakeUp],
-  --       sleepPeriods = [33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53], 
-  --       totalSleep = 903},
-  -- Shift {guardId = 2657, 
-  --       start = 1518-03-12 00:03:00, 
-  --       events = [[1518-03-12 00:21:00] FallAsleep,[1518-03-12 00:29:00] WakeUp,[1518-03-12 00:35:00] FallAsleep,[1518-03-12 00:47:00] WakeUp], 
-  --       sleepPeriods = [21,22,23,24,25,26,27,28,35,36,37,38,39,40,41,42,43,44,45,46], 
-  --       totalSleep = 682}
-  -- ]
 
 shiftsToMinuteMap :: [Shift] -> IntMap [Minute]
 shiftsToMinuteMap xs = do 

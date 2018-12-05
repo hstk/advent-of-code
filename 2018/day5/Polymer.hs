@@ -1,9 +1,7 @@
 module Polymer where
 
 import           Common
-import           Control.Applicative
 import           Data.Function ((&))
-import           Data.List
 import           Data.Char
 import           Text.Trifecta
 
@@ -28,8 +26,7 @@ isReduciblePair a b = case (isUpper a, isUpper b) of
 reducePolymer :: Polymer -> Polymer
 reducePolymer = fixpoint $ foldr collapse [] where
   collapse x [] = x:[]
-  collapse x (a:as) =
-    if isReduciblePair x a
+  collapse x (a:as) = if isReduciblePair x a
     then as
     else x:a:as
 
