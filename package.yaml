@@ -25,7 +25,9 @@ dependencies:
 - trifecta
 - containers
 - time
-- recursion-schemes
+- criterion
+- parallel
+- bytestring
 
 library:
   source-dirs: 
