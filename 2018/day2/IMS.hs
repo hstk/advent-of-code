@@ -25,9 +25,6 @@ main = do
 
   putStrLn $ "Stage 2 intersection: " <> show stage2
 
-countWith :: (a -> Bool) -> [a] -> Int
-countWith pred xs = length $ filter pred xs
-
 hasNReps :: Ord a => Int -> [a] -> Bool
 hasNReps n = any (\x -> length x == n) . group . sort
 

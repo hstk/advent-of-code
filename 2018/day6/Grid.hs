@@ -30,8 +30,8 @@ type Distance    = Int
 data Claim       = Claim Point Distance
 data Ownership   = OwnedBy Point | Contested | OccupiedBy Point | Unclaimed
   deriving (Eq, Show)
--- data ClaimStatus = ClaimedBy Claim | ContestedBetween [Claim] -- unnecessary but I think I know what's coming
-type Grid        = Map Point Ownership
+
+
 
 data Region = Region
   { up     :: Point
@@ -40,51 +40,6 @@ data Region = Region
   , right  :: Point
   , origin :: Point
   } deriving (Eq, Show)
-
--- findLargestArea :: [Point] -> (Int, Point)
-findLargestArea pts = do
--- determine finiteness
-  let searchList = catMaybes $ fmap (determineFiniteness pts) pts
-  -- take the remaining points, find the closet neighbors on each side, draw bounded box on neighbor perimeters to search within
-  let regions = fmap (pointToSearchRegion pts) searchList
-  -- and then insert / update map on all points within the box for the search space
-  reverse $ sortOn (area) $ fmap findOriginPointArea regions
-
-summarizeAreas :: Grid -> [(Point, Int)]
-summarizeAreas grid = do
-  undefined
-
-findOriginPointArea :: Region -> Target
-findOriginPointArea r = do
-  let searchList = [up r, down r, left r, right r, origin r]
-  let pointsInBox = boundedBoxFromRegion r
-
-  let pointDists = do
-        point <- pointsInBox
-        search <- searchList
-        pure (point, [Claim search (mhDist point search)])
-
-  let entries = fmap (\(a,b) -> (a, determineOwnership b)) pointDists
-  let owned = filter (\(a, b) -> b == (OwnedBy $ origin r)) entries
-  Target (origin r) (length $ owned)
-
-  -- M.fromList entries
-
-determineOwnership :: [Claim] -> Ownership
-determineOwnership xs =
-  let getDist (Claim _ d) = d
-      getClaimant (Claim p _) = p
-      sorted = sortOn getDist xs
-      (leastMh:next:[]) = take 2 sorted in
-  case length sorted of 
-    0 -> Unclaimed 
-    1 -> OwnedBy (getClaimant $ head sorted)
-    otherwise -> 
-      if getDist leastMh == 0
-      then OccupiedBy (getClaimant leastMh)
-      else if (getDist leastMh == getDist next)
-        then Contested
-        else OwnedBy (getClaimant leastMh)
 
 boundedBoxFromRegion :: Region -> [Point]
 boundedBoxFromRegion r = do

@@ -21,13 +21,30 @@ description:         Please see the README on GitHub at <https://github.com/gith
 
 dependencies:
 - base >= 4.7 && < 5
-- raw-strings-qq
-- trifecta
+- array
+- bytestring
 - containers
-- time
 - criterion
 - parallel
-- bytestring
+- raw-strings-qq
+- time
+- transformers
+- trifecta
+- vector
+- split
+
+executables:
+  lumber-exe:
+    main:                "day18\\Lumber.hs"
+    source-dirs:         "2018"
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    - -O2
+    - -main-is Lumber
+    dependencies:
+    - advent-of-code
 
 library:
   source-dirs: 

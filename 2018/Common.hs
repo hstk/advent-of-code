@@ -21,3 +21,6 @@ parseInput parser base path = do
 
 int :: Parser Int
 int = fmap fromIntegral integer
+
+countWith :: (a -> Bool) -> [a] -> Int
+countWith pred xs = length $ filter pred xs
