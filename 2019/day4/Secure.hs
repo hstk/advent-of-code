@@ -23,24 +23,38 @@ input = [134792..675810]
 isSixDigit :: Int -> Bool
 isSixDigit n = n >= 100_000 && n < 1_000_000
 
+-- offsetZipAsIntListWith f 1223
+-- zipWith f [1,2,2,5] [2,2,5]
+-- [f 1 2, f 2 2, f 2 5]
 offsetZipAsIntListWith :: (Int -> Int -> b) -> Int -> [b]
 offsetZipAsIntListWith f xs =
   let asInts = fmap digitToInt . show $ xs
   in 
     zipWith f asInts (drop 1 asInts)
 
+-- offsetZipAsIntListWith (<=) [1,2,5,5,8]
+-- [1 <= 2, 2 <= 5, 5 <= 5, 5 <= 8]
 hasIncreasingIntSeq :: Int -> Bool
 hasIncreasingIntSeq n = 
   let increasing = offsetZipAsIntListWith (<=) n
   in 
     getAll $ foldMap All increasing
 
+-- offsetZipAsIntListWith (==) [1,2,2,3]
+-- [1 == 2, 2 == 2, 2 == 3]
 hasPairSubseq :: Int -> Bool
 hasPairSubseq n =
-  let selfZipped = offsetZipAsIntListWith (==) n
+  let isPair = offsetZipAsIntListWith (==) n
   in 
-    getAny $ foldMap Any selfZipped
+    getAny $ foldMap Any isPair
 
+-- for this condition, having a pair that isn't part of a larger group
+-- we can look for an isolated pair using the group function
+-- the presence of a single element True anywhere is adequate
+-- offsetZipAsIntListWith (==) [1,1,2,2,2,2]
+-- [True, False, True, True, True]
+-- group it
+-- [[True], [False], [True, True, True]]
 hasIsolatedPairSubseq :: Int -> Bool
 hasIsolatedPairSubseq n = 
   let groupedPairs = group $ offsetZipAsIntListWith (==) n
