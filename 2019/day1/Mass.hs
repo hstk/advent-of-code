@@ -5,10 +5,22 @@ import Data.Function ((&))
 main :: IO ()
 main = do
   masses <- input
-  print . sum $ requiredFuel <$> masses
+  let moduleFuelReqs = requiredFuel <$> masses
+  let recursiveFuelReqs = fuelForFuel <$> moduleFuelReqs
+
+  putStrLn "Fuel for modules:"
+  print $ sum moduleFuelReqs
+  putStrLn "Total fuel:"
+  print $ (sum moduleFuelReqs) + (sum recursiveFuelReqs)
+
+fuelForFuel :: Int -> Int
+fuelForFuel fuel = let f = requiredFuel fuel in
+  case f > 0 of
+    True  -> f + fuelForFuel f
+    False -> 0
 
 requiredFuel :: Int -> Int
-requiredFuel mass = mass & div 3 & (-) 2
+requiredFuel mass = subtract 2 $ div mass 3
 
 input :: IO [Int]
 input = do 

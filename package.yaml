@@ -32,6 +32,10 @@ dependencies:
 - trifecta
 - vector
 - split
+- primitive
+- random
+- generic-lens
+- mtl
 
 executables:
   lumber-exe:
@@ -50,5 +54,6 @@ library:
   source-dirs: 
   - "2017"
   - "2018"
+  - "2019"
   # ghc-options:
   # - -XQuasiQuotes
